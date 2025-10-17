@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chained XSS Exercise - XSS Security Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        }
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+
+    <nav class="bg-black/20 backdrop-blur-sm border-b border-gray-800">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="text-xl font-bold text-white hover:text-blue-400 transition-colors">← Back to Lab</a>
+                <div class="text-sm text-gray-400">Exercise 3: Chained XSS</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto max-w-2xl p-4 sm:p-6 lg:p-8">
+        <div class="bg-gray-900/50 backdrop-blur-sm border border-gray-700 p-8 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold mb-2 text-center text-white">Chained XSS Exercise</h1>
+            <p class="text-gray-300 mb-6 text-center">Update your profile. Your website URL is stored and also reflected in a configuration script if passed as a URL parameter.</p>
+
+            <div class="mb-6">
+                <details>
+                    <summary class="cursor-pointer font-semibold text-orange-300 hover:text-orange-200">
+                        Need a hint?
+                    </summary>
+                    <div class="mt-3 bg-gray-800/50 p-4 rounded-lg border border-gray-700 text-gray-300 space-y-3">
+                        <p><strong>Hint 1:</strong> Map where you can input data (the profile form) and where that data is displayed or used (the profile link and the page's script logic).</p>
+                        <p><strong>Hint 2:</strong> This page processes a URL parameter named <code class="bg-gray-900 px-1 py-0.5 rounded">config</code>. Its value is inserted directly into the page's HTML body.</p>
+                        <p><strong>Hint 3:</strong> To solve this, your stored "Website URL" must point to this same page, but with a malicious <code class="bg-gray-900 px-1 py-0.5 rounded">config</code> URL parameter that exploits the second vulnerability.</p>
+                    </div>
+                </details>
+            </div>
+
+            <form id="profile-form" class="space-y-4 mb-8">
+                <div>
+                    <label for="website-url" class="block text-sm font-medium text-gray-300">Your Website URL</label>
+                    <input type="text" id="website-url" class="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm text-white" placeholder="https://example.com" required>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+                    <button type="submit" class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                        Save Profile
+                    </button>
+                    <button type="button" id="reset-button" class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        Clear Storage & Reload
+                    </button>
+                </div>
+            </form>
+
+            <h2 class="text-xl font-semibold text-white mb-4">Your Current Profile</h2>
+            <div id="profile-display" class="p-4 bg-gray-800/50 rounded-lg border border-gray-600 text-gray-300">
+                No website set.
+            </div>
+        </div>
+
+        <div id="vulnerability-note" style="display:none;" class="mt-8 bg-green-900/30 border border-green-500/50 rounded-xl p-6">
+            <h3 class="text-xl font-bold text-green-200 mb-2">Vulnerability Chain Found!</h3>
+            <p class="text-green-300">You successfully performed a **Chained XSS** attack. You used a **Stored XSS** vulnerability to save a malicious link. When clicked, that link exploited a separate **Reflected XSS** vulnerability by passing a payload in the `config` URL parameter. Great work!</p>
+        </div>
+    </div>
+
+    <script>
+        const profileForm = document.getElementById('profile-form');
+        const urlInput = document.getElementById('website-url');
+        const profileDisplay = document.getElementById('profile-display');
+        const resetButton = document.getElementById('reset-button');
+
+        function renderProfile() {
+            const savedUrl = localStorage.getItem('profileUrl') || '';
+            profileDisplay.innerHTML = ''; 
+
+            if (savedUrl) {
+                const p = document.createElement('p');
+                p.textContent = 'Website: ';
+                
+                const a = document.createElement('a');
+                a.href = savedUrl;
+                a.textContent = savedUrl;
+                a.className = 'text-orange-400 hover:underline';
+
+                p.appendChild(a);
+                profileDisplay.appendChild(p);
+            } else {
+                profileDisplay.textContent = 'No website set.';
+            }
+        }
+        
+        function processUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const config = params.get('config');
+            if (config) {
+                const tempDiv = document.createElement('div');
+                tempDiv.style.display = 'none';
+                tempDiv.innerHTML = config;
+                document.body.appendChild(tempDiv);
+            }
+        }
+
+        profileForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            localStorage.setItem('profileUrl', urlInput.value);
+            renderProfile();
+            showNotification('Profile saved!');
+        });
+
+        resetButton.addEventListener('click', function() {
+            localStorage.clear();
+            window.location.href = window.location.pathname;
+        });
+        
+        window.revealFlag = function() {
+            try {
+                const banner = document.createElement('div');
+                banner.style = "position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;background:#16a34a;color:white;padding:12px 20px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.4);font-weight:600;border:1px solid #22c55e;"
+                banner.innerHTML = `<strong>Congratulations!</strong> You found the flag: <code class="bg-black/20 px-2 py-1 rounded">FLAG-LEVEL3-SECRET</code>`;
+                document.body.appendChild(banner);
+                setTimeout(() => {
+                    banner.remove();
+                    document.getElementById('vulnerability-note').style.display = 'block';
+                }, 4000);
+            } catch (e) {}
+        };
+        
+        function showNotification(message) {
+            const notif = document.createElement('div');
+            notif.style = "position:fixed; top:16px; right:16px; background:#2563eb; color:white; padding:12px 20px; border-radius:8px; z-index:9999; transition: transform 0.3s ease;"
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            setTimeout(() => {
+                notif.style.transform = 'translateX(200%)';
+                setTimeout(() => notif.remove(), 300);
+            }, 3000);
+        }
+
+        processUrlParams();
+        renderProfile();
+    </script>
+</body>
+</html>

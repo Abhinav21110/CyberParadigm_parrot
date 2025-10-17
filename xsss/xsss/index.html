@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>XSS Security Training Lab</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:Inter, sans-serif}
+    .gradient-bg {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    }
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    }
+    .glow {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen">
+  <nav class="bg-black/20 backdrop-blur-sm border-b border-gray-800">
+    <div class="max-w-6xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-white">🔒 XSS Security Lab</h1>
+        <div class="text-sm text-gray-400">
+          Educational Purpose Only
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="text-center mb-12">
+      <h1 class="text-5xl font-bold text-white mb-4">Cross-Site Scripting (XSS) Training</h1>
+      <p class="text-xl text-gray-300 mb-8">Learn to identify and understand XSS vulnerabilities through hands-on exercises</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+      <div class="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6 card-hover">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
+            <span class="text-white font-bold">1</span>
+          </div>
+          <h2 class="text-xl font-semibold text-white">Stored DOM XSS</h2>
+        </div>
+        <p class="text-gray-300 mb-4">A guestbook application that uses `innerHTML` to insert user comments without proper sanitization.</p>
+        <div class="space-y-3">
+          <a href="Simplexss.html" target="_blank" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center">
+            <span class="mr-2">🚀</span>
+            Launch Exercise
+          </a>
+        </div>
+        <div class="mt-4 p-3 bg-gray-800/50 rounded-lg">
+          <p class="text-xs text-gray-400 mb-2">Example Payload:</p>
+          <code class="text-sm text-green-400 break-all">&lt;img src=x onerror=alert(1)&gt;</code>
+        </div>
+      </div>
+
+      <div class="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6 card-hover">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mr-4">
+            <span class="text-white font-bold">2</span>
+          </div>
+          <h2 class="text-xl font-semibold text-white">DOM-based XSS</h2>
+        </div>
+        <p class="text-gray-300 mb-4">Demonstrates XSS through URL hash parameters that are directly inserted into the DOM.</p>
+        <div class="space-y-3">
+          <a href="Domxss.html" target="_blank" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center">
+            <span class="mr-2">🚀</span>
+            Launch Exercise
+          </a>
+        </div>
+        <div class="mt-4 p-3 bg-gray-800/50 rounded-lg">
+          <p class="text-xs text-gray-400 mb-2">URL Hash Payload:</p>
+          <code class="text-sm text-green-400 break-all">#msg=&lt;img src=x...&gt;</code>
+        </div>
+      </div>
+
+      <div class="bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6 card-hover">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mr-4">
+            <span class="text-white font-bold">3</span>
+          </div>
+          <h2 class="text-xl font-semibold text-white">Chained XSS</h2>
+        </div>
+        <p class="text-gray-300 mb-4">A multi-step challenge requiring you to combine multiple small weaknesses to find a secret flag.</p>
+        <div class="space-y-3">
+           <a href="level3.html" target="_blank" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center">
+            <span class="mr-2">🚀</span>
+            Launch Exercise
+          </a>
+        </div>
+        <div class="mt-4 p-3 bg-gray-800/50 rounded-lg">
+          <p class="text-xs text-gray-400 mb-2">Objective:</p>
+          <code class="text-sm text-green-400 break-all">Find the secret flag by chaining vulnerabilities.</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gray-900/30 backdrop-blur-sm border border-gray-700 rounded-xl p-8">
+      <h2 class="text-2xl font-bold text-white mb-6">📚 Learning Resources</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-3">XSS Types</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li>• <strong>Stored XSS:</strong> Malicious script stored on server</li>
+            <li>• <strong>Reflected XSS:</strong> Script reflected from user input</li>
+            <li>• <strong>DOM-based XSS:</strong> Client-side script execution</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-3">Prevention Techniques</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li>• Input validation and sanitization</li>
+            <li>• Output encoding</li>
+            <li>• Content Security Policy (CSP)</li>
+            <li>• Using textContent instead of innerHTML</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <footer class="text-center mt-12 py-8 border-t border-gray-800">
+      <p class="text-gray-400">
+        Educational XSS Lab | Use responsibly and only in controlled environments
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // Add some interactive effects
+    document.querySelectorAll('.card-hover').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.classList.add('glow');
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.classList.remove('glow');
+      });
+    });
+  </script>
+</body>
+</html>

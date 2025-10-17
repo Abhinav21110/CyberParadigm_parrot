@@ -6,8 +6,9 @@ import { Dashboard } from './pages/Dashboard';
 import { Challenges } from './pages/Challenges';
 import { Courses } from './pages/Courses';
 import { Community } from './pages/Community';
+import { XssChallenge } from './pages/XssChallenge';
 
-type Page = 'dashboard' | 'courses' | 'challenges' | 'community';
+type Page = 'dashboard' | 'courses' | 'challenges' | 'community' | 'xss';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('dashboard');
@@ -22,6 +23,8 @@ function App() {
         return <Challenges />;
       case 'community':
         return <Community />;
+      case 'xss':
+        return <XssChallenge />;
       default:
         return <Dashboard />;
     }

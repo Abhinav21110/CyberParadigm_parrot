@@ -1,5 +1,4 @@
 import { TrendingUp, Award, Target } from 'lucide-react';
-import { PwnBox } from '../components/PwnBox';
 
 export function Dashboard() {
   return (
@@ -47,10 +46,7 @@ export function Dashboard() {
         </div>
       </div>
 
-      <div className="mb-6">
-        <h2 className="text-white text-xl font-semibold mb-4">Practice Environment</h2>
-        <PwnBox challengeId="demo-001" challengeTitle="Getting Started" />
-      </div>
+      {/* Instance box removed from home per requirement */}
     </div>
   );
 }

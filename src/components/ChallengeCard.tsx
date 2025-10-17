@@ -22,9 +22,9 @@ export function ChallengeCard({ challenge }: ChallengeCardProps) {
         <span className={`text-sm font-medium ${difficultyColors[challenge.difficulty]}`}>
           {challenge.difficulty}
         </span>
-        <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
+        <a href="#/xss" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors">
           Start Challenge
-        </button>
+        </a>
       </div>
     </div>
   );

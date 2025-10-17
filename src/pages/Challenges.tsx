@@ -5,47 +5,7 @@ import { Category, Challenge } from '../types/challenge';
 
 const challenges: Challenge[] = [
   {
-    id: '1',
-    title: 'SQL Injection Basics',
-    description: 'Learn the fundamentals of SQL injection attacks and how to exploit vulnerable web applications.',
-    category: 'Web',
-    difficulty: 'Easy',
-    points: 100
-  },
-  {
-    id: '2',
-    title: 'RSA Encryption',
-    description: 'Break weak RSA encryption implementation by factoring small prime numbers.',
-    category: 'Crypto',
-    difficulty: 'Medium',
-    points: 250
-  },
-  {
-    id: '3',
-    title: 'Memory Forensics',
-    description: 'Analyze a memory dump to find hidden artifacts and recover deleted data.',
-    category: 'Forensics',
-    difficulty: 'Hard',
-    points: 500
-  },
-  {
-    id: '4',
-    title: 'Buffer Overflow',
-    description: 'Exploit a buffer overflow vulnerability to gain control of program execution.',
-    category: 'Exploitation',
-    difficulty: 'Hard',
-    points: 450
-  },
-  {
-    id: '5',
-    title: 'Reverse Engineering 101',
-    description: 'Analyze and reverse engineer a simple binary to find the flag.',
-    category: 'Reversing',
-    difficulty: 'Medium',
-    points: 300
-  },
-  {
-    id: '6',
+    id: 'xss',
     title: 'XSS Attack',
     description: 'Find and exploit Cross-Site Scripting vulnerabilities in a web application.',
     category: 'Web',
@@ -57,9 +17,7 @@ const challenges: Challenge[] = [
 export function Challenges() {
   const [activeCategory, setActiveCategory] = useState<Category>('All');
 
-  const filteredChallenges = activeCategory === 'All'
-    ? challenges
-    : challenges.filter(c => c.category === activeCategory);
+  const filteredChallenges = challenges;
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">

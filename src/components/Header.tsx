@@ -12,7 +12,8 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
     { page: 'dashboard', label: 'Dashboard' },
     { page: 'courses', label: 'Courses' },
     { page: 'challenges', label: 'Challenges' },
-    { page: 'community', label: 'Community' }
+    { page: 'community', label: 'Community' },
+    { page: 'xss', label: 'XSS' },
   ];
 
   return (

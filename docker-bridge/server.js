@@ -217,6 +217,33 @@ app.post('/api/docker/reset', async (req, res) => {
   }
 });
 
+// Open a URL inside the container (Firefox in Parrot OS GUI)
+app.post('/api/docker/open-url', async (req, res) => {
+  try {
+    const { containerId, url } = req.body;
+    if (!containerId || !url) {
+      return res.status(400).json({ success: false, error: 'containerId and url are required' });
+    }
+    const data = activeContainers.get(containerId);
+    if (!data) {
+      return res.status(404).json({ success: false, error: 'Container not found' });
+    }
+
+    const { container } = data;
+    const exec = await container.exec({
+      Cmd: ['/bin/bash', '-lc', `DISPLAY=:1 su - attacker -c "firefox --new-window '${url}'"`],
+      AttachStdout: true,
+      AttachStderr: true,
+      Tty: false,
+    });
+    const stream = await exec.start({ hijack: false, stdin: false });
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error opening URL in container:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // List all active containers
 app.get('/api/docker/containers', async (req, res) => {
   try {

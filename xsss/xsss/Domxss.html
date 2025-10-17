@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM XSS Exercise - XSS Security Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        }
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+
+    <nav class="bg-black/20 backdrop-blur-sm border-b border-gray-800">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="text-xl font-bold text-white hover:text-blue-400 transition-colors">← Back to Lab</a>
+                <div class="text-sm text-gray-400">Exercise 2: DOM-based XSS</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto max-w-2xl p-4 sm:p-6 lg:p-8">
+        <div class="bg-gray-900/50 backdrop-blur-sm border border-gray-700 p-8 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold mb-2 text-center text-white">DOM-based XSS Exercise</h1>
+            <p class="text-gray-300 mb-6 text-center">This page demonstrates a DOM-based injection sink. Use the URL hash to inject content.</p>
+
+            <div class="mb-6">
+                <details>
+                    <summary class="cursor-pointer font-semibold text-purple-300 hover:text-purple-200">
+                        Need a hint?
+                    </summary>
+                    <div class="mt-3 bg-gray-800/50 p-4 rounded-lg border border-gray-700 text-gray-300">
+                        <p>To test, append a hash (#) to the end of the URL in your address bar.</p>
+                        <p class="mt-2"><strong>Example:</strong> <code class="bg-gray-900 px-2 py-1 rounded">#msg=Hello World</code></p>
+                        <p class="mt-2"><strong>Payload Example:</strong> <code class="bg-gray-900 px-2 py-1 rounded break-all">#msg=&lt;img src=x onerror=window.xssSuccess()&gt;</code></p>
+                    </div>
+                </details>
+            </div>
+
+            <div id="injected-area" class="p-4 bg-gray-800/50 rounded-lg border border-gray-600 text-gray-300">No message</div>
+        </div>
+        
+        <div id="vulnerability-note" style="display:none;" class="mt-8 bg-green-900/30 border border-green-500/50 rounded-xl p-6">
+            <h3 class="text-xl font-bold text-green-200 mb-2">Vulnerability Found!</h3>
+            <p class="text-green-300">You successfully performed a **DOM-based XSS** attack. The JavaScript on this page takes input directly from the URL hash (the "source") and writes it into the HTML using `innerHTML` (the "sink") without any sanitization, allowing your script to run.</p>
+        </div>
+    </div>
+
+    <script>
+        function getHashParams() {
+            var hash = location.hash.substring(1);
+            var params = {};
+            hash.split('&').forEach(function(part) {
+                var kv = part.split('=');
+                if (kv[0]) params[kv[0]] = kv[1] ? decodeURIComponent(kv[1]) : '';
+            });
+            return params;
+        }
+
+        function updateFromHash() {
+            var params = getHashParams();
+            var area = document.getElementById('injected-area');
+            if (params.msg) {
+                area.innerHTML = params.msg;
+            } else {
+                area.textContent = 'No message';
+            }
+        }
+
+        window.addEventListener('hashchange', updateFromHash);
+        updateFromHash();
+
+        window.xssSuccess = function() {
+            try {
+                const banner = document.createElement('div');
+                banner.style = "position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;background:#16a34a;color:white;padding:12px 20px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.4);font-weight:600;border:1px solid #22c55e;"
+                banner.textContent = '✅ Success! Your script was executed.';
+                document.body.appendChild(banner);
+                setTimeout(() => {
+                    banner.remove();
+                    document.getElementById('vulnerability-note').style.display = 'block';
+                }, 3000);
+            } catch (e) { }
+        };
+    </script>
+</body>
+</html>
