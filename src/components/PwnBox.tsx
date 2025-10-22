@@ -141,8 +141,8 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
   }, []);
 
   return (
-    <div ref={containerRef} className={`bg-gray-900 border border-gray-800 rounded-lg p-6 ${isFullscreen ? 'fixed inset-0 z-50 flex flex-col' : ''}`}>
-      <div className="flex items-center justify-between mb-4">
+    <div ref={containerRef} className={`bg-gray-900 border border-gray-800 rounded-lg p-6 ${isFullscreen ? 'fixed inset-0 z-50 flex flex-col border-none p-0 bg-black' : ''}`}>
+      <div className={`flex items-center justify-between mb-4 ${isFullscreen ? 'hidden' : ''}`}>
         <div className="flex items-center gap-3">
           <TerminalIcon className="w-6 h-6 text-red-500" />
           <div>
@@ -161,7 +161,7 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
       </div>
 
       {!isActive ? (
-        <div className="text-center py-12">
+        <div className={`text-center py-12 ${isFullscreen ? 'hidden' : ''}`}>
           <div className="mb-4">
             <div className="w-20 h-20 mx-auto bg-gray-800 rounded-full flex items-center justify-center mb-4">
               <TerminalIcon className="w-10 h-10 text-gray-600" />
@@ -191,8 +191,8 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
         </div>
       ) : (
         <div className={isFullscreen ? 'flex-1 flex flex-col' : ''}>
-          <div className={`bg-black rounded-lg border border-gray-800 mb-4 overflow-hidden ${isFullscreen ? 'flex-1' : 'h-[400px]'}`}>
-            <div className="flex items-center gap-2 bg-gray-900 px-4 py-2 border-b border-gray-800">
+          <div className={`bg-black rounded-lg border border-gray-800 mb-4 overflow-hidden ${isFullscreen ? 'flex-1 border-none rounded-none' : 'h-[400px]'}`}>
+            <div className={`flex items-center gap-2 bg-gray-900 px-4 py-2 border-b border-gray-800 ${isFullscreen ? 'hidden' : ''}`}>
               <div className="flex gap-2">
                 <div className="w-3 h-3 rounded-full bg-red-500"></div>
                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
@@ -200,15 +200,22 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
               </div>
               <span className="text-gray-400 text-sm ml-2">{containerInfo?.novncUrl ? 'Parrot OS GUI (noVNC)' : 'root@parrot:~#'}</span>
             </div>
-            <div className={`${isFullscreen ? 'h-[calc(100%-40px)]' : 'h-[calc(400px-40px)]'}`}>
+            <div className={`${isFullscreen ? 'h-full w-full' : 'h-[calc(400px-40px)]'}`}>
               {containerInfo?.novncUrl ? (
                 <iframe
                   src={containerInfo.novncUrl}
                   title="Parrot OS GUI"
-                  className="w-full h-full bg-black"
+                  className="w-full h-full bg-black border-none"
+                  style={{
+                    width: isFullscreen ? '1920px' : '100%',
+                    height: isFullscreen ? '1080px' : '100%',
+                    maxWidth: isFullscreen ? '100vw' : 'none',
+                    maxHeight: isFullscreen ? '100vh' : 'none',
+                    objectFit: isFullscreen ? 'contain' : 'none'
+                  }}
                 />
               ) : (
-                <Terminal 
+                <Terminal
                   containerId={containerInfo?.containerId || ''}
                   onDisconnect={handleDisconnect}
                 />
@@ -216,7 +223,7 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className={`grid grid-cols-2 gap-3 mb-4 ${isFullscreen ? 'hidden' : ''}`}>
             <div className="bg-gray-800 rounded-lg p-3">
               <p className="text-gray-400 text-xs mb-1">Instance ID</p>
               <p className="text-white font-mono text-sm">{containerInfo?.instanceId}</p>
@@ -227,7 +234,7 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
             </div>
           </div>
 
-          <div className="flex gap-3">
+          <div className={`flex gap-3 ${isFullscreen ? 'hidden' : ''}`}>
             <button
               onClick={handleReset}
               disabled={isLoading}
