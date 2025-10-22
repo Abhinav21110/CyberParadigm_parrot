@@ -28,7 +28,7 @@ export function Terminal({ containerId, onDisconnect }: TerminalProps) {
         foreground: '#00ff00',
         cursor: '#00ff00',
         cursorAccent: '#000000',
-        selection: 'rgba(255, 255, 255, 0.3)',
+        selectionBackground: 'rgba(255, 255, 255, 0.3)',
       },
       cols: 80,
       rows: 24,
