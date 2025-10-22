@@ -2,7 +2,7 @@ FROM parrotsec/security:latest
 
 ENV DEBIAN_FRONTEND=noninteractive \
     DISPLAY=:1 \
-    VNC_RESOLUTION=1280x800 \
+    VNC_RESOLUTION=1920x1080 \
     VNC_DEPTH=24 \
     USER=attacker \
     PASS=attacker
@@ -31,9 +31,12 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN rm -f /etc/xdg/autostart/{blueman,light-locker,nm-applet,polkit-gnome-authentication-agent-1}.desktop
 
 # Create attacker user and preload XFCE config
-RUN useradd -m -s /bin/bash "$USER" && echo "$USER:$PASS" | chpasswd && \
-    adduser "$USER" sudo && echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
-    cp -r /etc/skel/.config /home/$USER/ && chown -R $USER:$USER /home/$USER/.config
+RUN if ! id -u "$USER" > /dev/null 2>&1; then \
+        useradd -m -s /bin/bash "$USER" && echo "$USER:$PASS" | chpasswd && \
+        adduser "$USER" sudo && echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers; \
+    fi && \
+    cp -r /etc/skel/.config /home/$USER/ 2>/dev/null || mkdir -p /home/$USER/.config && \
+    chown -R $USER:$USER /home/$USER/.config
 
 # Configure SSH
 RUN mkdir -p /var/run/sshd && \
