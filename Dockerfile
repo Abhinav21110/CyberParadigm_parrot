@@ -17,12 +17,12 @@ RUN apt-get install -y \
 
 # Parrot branding and tools
 RUN apt-get install -y \
-    parrot-interface parrot-menu parrot-tools-full
+    parrot-interface parrot-menu
 
 # Security tools
 RUN apt-get install -y \
     openssh-server sudo curl wget git net-tools iproute2 iputils-ping \
-    nmap metasploit-framework sqlmap john hashcat
+    metasploit-framework sqlmap burpsuite
 
 # Clean up apt cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
