@@ -13,6 +13,12 @@ type Page = 'dashboard' | 'courses' | 'challenges' | 'community' | 'xss';
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('dashboard');
 
+  const handleNavigateToChallenge = (challengeId: string) => {
+    if (challengeId === 'xss') {
+      setCurrentPage('xss');
+    }
+  };
+
   const renderPage = () => {
     switch (currentPage) {
       case 'dashboard':
@@ -20,7 +26,7 @@ function App() {
       case 'courses':
         return <Courses />;
       case 'challenges':
-        return <Challenges />;
+        return <Challenges onNavigateToChallenge={handleNavigateToChallenge} />;
       case 'community':
         return <Community />;
       case 'xss':

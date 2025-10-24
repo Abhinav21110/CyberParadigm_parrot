@@ -21,6 +21,7 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
   const [containerInfo, setContainerInfo] = useState<ContainerInfo | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const handleSpawn = async () => {
     setIsLoading(true);
@@ -90,7 +91,7 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
     
     setIsLoading(true);
     try {
-      await fetch('http://localhost:3001/api/docker/reset', {
+      const response = await fetch('http://localhost:3001/api/docker/reset', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +100,18 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
           containerId: containerInfo.containerId
         }),
       });
-      toast.success('Environment reset successfully!');
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        toast.success('Environment reset successfully!');
+        // Refresh the iframe to reload the desktop environment
+        if (iframeRef.current) {
+          iframeRef.current.src = iframeRef.current.src;
+        }
+      } else {
+        throw new Error(result.error || 'Reset failed');
+      }
     } catch (error) {
       console.error('Error resetting container:', error);
       toast.error('Failed to reset environment');
@@ -141,7 +153,7 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
   }, []);
 
   return (
-    <div ref={containerRef} className={`bg-gray-900 border border-gray-800 rounded-lg p-6 ${isFullscreen ? 'fixed inset-0 z-50 flex flex-col border-none p-0 bg-black' : ''}`}>
+    <div ref={containerRef} className={`bg-gray-900 border border-gray-800 rounded-lg p-6 ${isFullscreen ? 'fixed top-0 left-0 right-0 bottom-0 z-50 w-screen h-screen border-none p-0 bg-black m-0' : ''}`}>
       <div className={`flex items-center justify-between mb-4 ${isFullscreen ? 'hidden' : ''}`}>
         <div className="flex items-center gap-3">
           <TerminalIcon className="w-6 h-6 text-red-500" />
@@ -200,19 +212,22 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
               </div>
               <span className="text-gray-400 text-sm ml-2">{containerInfo?.novncUrl ? 'Parrot OS GUI (noVNC)' : 'root@parrot:~#'}</span>
             </div>
-            <div className={`${isFullscreen ? 'h-full w-full' : 'h-[calc(400px-40px)]'}`}>
+            <div className={`${isFullscreen ? 'h-screen w-screen' : 'h-[calc(400px-40px)]'}`}>
               {containerInfo?.novncUrl ? (
                 <iframe
+                  ref={iframeRef}
                   src={containerInfo.novncUrl}
                   title="Parrot OS GUI"
                   className="w-full h-full bg-black border-none"
                   style={{
-                    width: isFullscreen ? '1920px' : '100%',
-                    height: isFullscreen ? '1080px' : '100%',
-                    maxWidth: isFullscreen ? '100vw' : 'none',
-                    maxHeight: isFullscreen ? '100vh' : 'none',
-                    objectFit: isFullscreen ? 'contain' : 'none'
+                    width: '100%',
+                    height: isFullscreen ? 'calc(100vh + 60px)' : '100%',
+                    border: 'none',
+                    margin: 0,
+                    padding: 0,
+                    overflow: 'hidden'
                   }}
+                  allow="clipboard-read; clipboard-write"
                 />
               ) : (
                 <Terminal

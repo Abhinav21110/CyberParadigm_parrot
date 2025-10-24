@@ -14,10 +14,20 @@ const challenges: Challenge[] = [
   }
 ];
 
-export function Challenges() {
+interface ChallengesProps {
+  onNavigateToChallenge?: (challengeId: string) => void;
+}
+
+export function Challenges({ onNavigateToChallenge }: ChallengesProps) {
   const [activeCategory, setActiveCategory] = useState<Category>('All');
 
   const filteredChallenges = challenges;
+
+  const handleStartChallenge = (challengeId: string) => {
+    if (onNavigateToChallenge) {
+      onNavigateToChallenge(challengeId);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
@@ -35,7 +45,11 @@ export function Challenges() {
 
       <div className="grid grid-cols-2 gap-6">
         {filteredChallenges.map((challenge) => (
-          <ChallengeCard key={challenge.id} challenge={challenge} />
+          <ChallengeCard 
+            key={challenge.id} 
+            challenge={challenge}
+            onStartChallenge={handleStartChallenge}
+          />
         ))}
       </div>
     </div>

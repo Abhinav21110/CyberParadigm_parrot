@@ -1,6 +1,6 @@
 import { Search, Bell } from 'lucide-react';
 
-type Page = 'dashboard' | 'courses' | 'challenges' | 'community';
+type Page = 'dashboard' | 'courses' | 'challenges' | 'community' | 'xss';
 
 interface HeaderProps {
   currentPage: Page;
@@ -13,7 +13,6 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
     { page: 'courses', label: 'Courses' },
     { page: 'challenges', label: 'Challenges' },
     { page: 'community', label: 'Community' },
-    { page: 'xss', label: 'XSS' },
   ];
 
   return (
