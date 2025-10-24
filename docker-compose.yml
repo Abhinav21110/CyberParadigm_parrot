@@ -5,6 +5,8 @@ services:
     volumes:
       - ./docker-bridge:/app
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - PUBLIC_URL=${PUBLIC_URL}
     command: ["node", "server.js"]
     ports:
       - "3000:3000"
