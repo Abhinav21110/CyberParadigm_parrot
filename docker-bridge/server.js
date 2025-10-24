@@ -13,7 +13,7 @@
  * 2. npm install express cors dockerode
  * 3. node server.js
  * 
- * The server will run on http://localhost:3001
+ * The server will run on http://0.0.0.0:3001 (accessible on all network interfaces)
  */
 
 const express = require('express');
@@ -25,7 +25,6 @@ const { Server } = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const docker = new Docker();
-const PORT = 3001;
 
 // Wait until noVNC is serving on the mapped host port
 async function waitForNoVNC(hostPort, timeoutMs = 15000) {
@@ -46,13 +45,13 @@ async function waitForNoVNC(hostPort, timeoutMs = 15000) {
 // Initialize Socket.IO with CORS
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:8080",
+    origin: "*", // Allow all origins for public accessibility
     methods: ["GET", "POST"]
   }
 });
 
 // Middleware
-app.use(cors({ origin: "http://localhost:8080" }));
+app.use(cors({ origin: "*" })); // Allow all origins for public accessibility
 app.use(express.json());
 
 // Store active containers
@@ -340,14 +339,17 @@ io.on('connection', (socket) => {
   });
 });
 
+const port = process.env.PORT || 3001;
+const host = '0.0.0.0';
+
 // Start server
-server.listen(PORT, () => {
+server.listen(port, host, () => {
   console.log(`\n${'='.repeat(60)}`);
   console.log('🐳 Docker Bridge Server Running');
   console.log(`${'='.repeat(60)}`);
-  console.log(`Server:     http://localhost:${PORT}`);
-  console.log(`WebSocket:  ws://localhost:${PORT}`);
-  console.log(`Health:     http://localhost:${PORT}/api/health`);
+  console.log(`Server:     http://${host}:${port}`);
+  console.log(`WebSocket:  ws://${host}:${port}`);
+  console.log(`Health:     http://${host}:${port}/api/health`);
   console.log(`${'='.repeat(60)}\n`);
   console.log('✅ Ready to accept container requests from the web app');
   console.log('📝 Make sure Docker daemon is running\n');
