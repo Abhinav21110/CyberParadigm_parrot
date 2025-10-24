@@ -153,7 +153,7 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
   }, []);
 
   return (
-    <div ref={containerRef} className={`bg-gray-900 border border-gray-800 rounded-lg p-6 ${isFullscreen ? 'fixed top-0 left-0 right-0 bottom-0 z-50 w-screen h-screen border-none p-0 bg-black m-0' : ''}`}>
+    <div ref={containerRef} className={`bg-gray-900 border border-gray-800 rounded-lg p-6 ${isFullscreen ? 'fixed top-0 left-0 right-0 bottom-0 z-50 w-screen h-screen border-none p-0 bg-black m-0 overflow-hidden' : ''}`}>
       <div className={`flex items-center justify-between mb-4 ${isFullscreen ? 'hidden' : ''}`}>
         <div className="flex items-center gap-3">
           <TerminalIcon className="w-6 h-6 text-red-500" />
@@ -212,7 +212,7 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
               </div>
               <span className="text-gray-400 text-sm ml-2">{containerInfo?.novncUrl ? 'Parrot OS GUI (noVNC)' : 'root@parrot:~#'}</span>
             </div>
-            <div className={`${isFullscreen ? 'h-screen w-screen' : 'h-[calc(400px-40px)]'}`}>
+            <div className={`${isFullscreen ? 'h-screen w-screen overflow-hidden' : 'h-[calc(400px-40px)]'}`}>
               {containerInfo?.novncUrl ? (
                 <iframe
                   ref={iframeRef}
@@ -221,7 +221,7 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
                   className="w-full h-full bg-black border-none"
                   style={{
                     width: '100%',
-                    height: isFullscreen ? 'calc(100vh + 60px)' : '100%',
+                    height: isFullscreen ? '100vh' : '100%',
                     border: 'none',
                     margin: 0,
                     padding: 0,
