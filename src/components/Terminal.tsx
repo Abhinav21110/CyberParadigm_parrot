@@ -47,7 +47,7 @@ export function Terminal({ containerId, onDisconnect }: TerminalProps) {
     fitAddonRef.current = fitAddon;
 
     // Connect to WebSocket
-    const socket = io('http://localhost:3001', {
+    const socket = io(import.meta.env.VITE_API_URL, {
       transports: ['websocket'],
     });
 

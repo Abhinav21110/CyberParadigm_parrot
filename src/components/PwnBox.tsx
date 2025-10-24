@@ -28,7 +28,7 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
     
     try {
       // Call local Docker API bridge
-      const response = await fetch('http://localhost:3001/api/docker/spawn', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/docker/spawn`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
       toast.success('Parrot OS environment spawned successfully!');
     } catch (error) {
       console.error('Error spawning container:', error);
-      toast.error('Failed to spawn environment. Make sure Docker bridge is running on port 3001.');
+      toast.error('Failed to spawn environment. Make sure Docker bridge is running and accessible.');
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +65,7 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
     
     setIsLoading(true);
     try {
-      await fetch('http://localhost:3001/api/docker/terminate', {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/docker/terminate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export function PwnBox({ challengeId }: PwnBoxProps) {
     
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/docker/reset', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/docker/reset`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

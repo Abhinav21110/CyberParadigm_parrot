@@ -31,7 +31,7 @@ export function XssChallenge() {
     ];
     for (const url of urls) {
       try {
-        await fetch('http://localhost:3001/api/docker/open-url', {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/docker/open-url`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ containerId: id, url }),
