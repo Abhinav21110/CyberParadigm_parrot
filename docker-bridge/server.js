@@ -30,7 +30,7 @@ const docker = new Docker();
 async function waitForNoVNC(hostPort, timeoutMs = 15000) {
   const deadline = Date.now() + timeoutMs;
   const publicUrl = process.env.PUBLIC_URL || 'http://127.0.0.1';
-  const url = `${publicUrl}:${hostPort}/vnc.html`;
+  const url = `${publicUrl.replace(/\/$/, '')}:${hostPort}/vnc.html`;
   while (Date.now() < deadline) {
     try {
       const res = await fetch(url, { method: 'GET' });
@@ -125,7 +125,7 @@ app.post('/api/docker/spawn', async (req, res) => {
     // Include 'path=websockify' which noVNC expects when served by websockify
     const publicUrl = process.env.PUBLIC_URL || 'http://127.0.0.1';
     const novncUrl = novncPort
-      ? `${publicUrl}:${novncPort}/vnc.html?autoconnect=1&reconnect=1&path=websockify&host=${publicUrl.replace('http://', '').replace('https://', '')}&port=${novncPort}&resize=scale&quality=6&compression=2&clipboard=1&show_dot=1&view_only=0&scale=1.0`
+      ? `${publicUrl.replace(/\/$/, '')}:${novncPort}/vnc.html?autoconnect=1&reconnect=1&path=websockify&host=${publicUrl.replace(/^https?:\/\//, '')}&port=${novncPort}&resize=scale&quality=6&compression=2&clipboard=1&show_dot=1&view_only=0&scale=1.0`
       : null;
 
     // Store container reference
