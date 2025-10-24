@@ -13,7 +13,7 @@
  * 2. npm install express cors dockerode
  * 3. node server.js
  * 
- * The server will run on http://0.0.0.0:3001 (accessible on all network interfaces)
+ * The server will run on http://127.0.0.1:3001 (localhost only)
  */
 
 const express = require('express');
@@ -342,7 +342,7 @@ io.on('connection', (socket) => {
 });
 
 const port = process.env.PORT || 3001;
-const host = '0.0.0.0';
+const host = '127.0.0.1';
 
 // Start server
 server.listen(port, host, () => {
